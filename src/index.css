@@ -17,4 +17,17 @@
   .print-only { display: block !important; }
   .print-break { page-break-before: always; }
   body { background: white !important; }
+
+  /* Print full pack: show all sections regardless of active tab */
+  .result-section {
+    display: block !important;
+  }
+
+  /* Print single section: hide all, then show only the active one */
+  body.print-single .result-section {
+    display: none !important;
+  }
+  body.print-single .result-section.section-active {
+    display: block !important;
+  }
 }

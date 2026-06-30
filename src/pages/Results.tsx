@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useState } from 'react'
 import type { ScoredResult } from '../engine/score'
 import { BANDS } from '../engine/score'
 import type { OrgInfo } from '../App'
@@ -12,7 +12,21 @@ interface Props {
   onRestart: () => void
 }
 
-const WEEK_LABELS = ['Week 1 - Immediate priorities', 'Week 2 - Build on the foundations', 'Week 3 - Strengthen and document', 'Week 4 - Review and sustain']
+const TABS = [
+  { id: 'score',     label: 'Readiness Score' },
+  { id: 'plan',      label: '30-Day Action Plan' },
+  { id: 'checklist', label: 'First Hour Checklist' },
+  { id: 'board',     label: 'Board Briefing' },
+  { id: 'staff',     label: 'Staff Guide' },
+  { id: 'tabletop',  label: 'Tabletop Exercise' },
+]
+
+const WEEK_LABELS = [
+  'Week 1 - Immediate priorities',
+  'Week 2 - Build on the foundations',
+  'Week 3 - Strengthen and document',
+  'Week 4 - Review and sustain',
+]
 
 const EFFORT_COLORS: Record<string, string> = {
   Low:    'bg-green-100 text-green-700',
@@ -29,7 +43,6 @@ const CAT_COLORS: Record<Category, string> = {
 }
 
 function ScoreGauge({ percent, band }: { percent: number; band: keyof typeof BANDS }) {
-  const cfg = BANDS[band]
   const color = {
     critical: '#e03131',
     high:     '#e8590c',
@@ -37,56 +50,27 @@ function ScoreGauge({ percent, band }: { percent: number; band: keyof typeof BAN
     good:     '#2f9e44',
     strong:   '#3b5bdb',
   }[band]
-
-  // SVG arc gauge
-  const r = 64
-  const cx = 80
-  const cy = 80
-  const circumference = Math.PI * r  // half circle
+  const r = 64, cx = 80, cy = 80
+  const circumference = Math.PI * r
   const offset = circumference * (1 - percent / 100)
-
   return (
     <div className="flex flex-col items-center">
       <svg width="160" height="90" viewBox="0 0 160 90" className="overflow-visible">
-        {/* Track */}
-        <path
-          d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`}
-          fill="none"
-          stroke="#e2e8f0"
-          strokeWidth="12"
-          strokeLinecap="round"
-        />
-        {/* Fill */}
-        <path
-          d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`}
-          fill="none"
-          stroke={color}
-          strokeWidth="12"
-          strokeLinecap="round"
-          strokeDasharray={`${circumference} ${circumference}`}
-          strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 1s ease' }}
-        />
-        {/* Score text */}
+        <path d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`} fill="none" stroke="#e2e8f0" strokeWidth="12" strokeLinecap="round" />
+        <path d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`} fill="none" stroke={color} strokeWidth="12" strokeLinecap="round"
+          strokeDasharray={`${circumference} ${circumference}`} strokeDashoffset={offset} style={{ transition: 'stroke-dashoffset 1s ease' }} />
         <text x={cx} y={cy - 8} textAnchor="middle" fontSize="28" fontWeight="700" fill="#1e293b">{percent}%</text>
         <text x={cx} y={cy + 12} textAnchor="middle" fontSize="11" fill="#64748b">readiness score</text>
       </svg>
-      <span className={`mt-2 px-3 py-1 rounded-full text-sm font-semibold ${cfg.bgColor} ${cfg.textColor}`}>
-        {cfg.label}
+      <span className={`mt-2 px-3 py-1 rounded-full text-sm font-semibold ${BANDS[band].bgColor} ${BANDS[band].textColor}`}>
+        {BANDS[band].label}
       </span>
     </div>
   )
 }
 
 function CategoryBar({ label, category, percent, band }: { label: string; category: Category; percent: number; band: keyof typeof BANDS }) {
-  const color = {
-    critical: 'bg-red-500',
-    high:     'bg-orange-400',
-    moderate: 'bg-amber-400',
-    good:     'bg-green-500',
-    strong:   'bg-blue-500',
-  }[band]
-
+  const color = { critical: 'bg-red-500', high: 'bg-orange-400', moderate: 'bg-amber-400', good: 'bg-green-500', strong: 'bg-blue-500' }[band]
   return (
     <div>
       <div className="flex justify-between items-center mb-1.5">
@@ -103,25 +87,45 @@ function CategoryBar({ label, category, percent, band }: { label: string; catego
   )
 }
 
+function SectionHeader({ number, title }: { number: string; title: string }) {
+  return (
+    <div className="flex items-center gap-4 mb-5">
+      <div className="w-9 h-9 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 tabular-nums">
+        {number}
+      </div>
+      <h2 className="text-xl font-bold text-slate-900">{title}</h2>
+    </div>
+  )
+}
+
 export default function Results({ result, orgInfo, onRestart }: Props) {
-  const packRef = useRef<HTMLDivElement>(null)
+  const [activeTab, setActiveTab] = useState(0)
   const cfg = BANDS[result.band]
   const scenario = TABLETOP_SCENARIOS[0]
+  const byWeek = [1, 2, 3, 4].map(w => ({ week: w, items: result.actionPlan.filter(a => a.week === w) }))
 
-  function handlePrint() {
+  function handlePrintSection() {
+    document.body.classList.add('print-single')
+    window.print()
+    window.addEventListener('afterprint', () => {
+      document.body.classList.remove('print-single')
+    }, { once: true })
+  }
+
+  function handlePrintAll() {
     window.print()
   }
 
-  const byWeek = [1, 2, 3, 4].map(w => ({
-    week: w,
-    items: result.actionPlan.filter(a => a.week === w),
-  }))
+  function sectionClass(index: number) {
+    return `result-section${activeTab === index ? ' section-active' : ' hidden'}`
+  }
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* Screen-only header */}
+
+      {/* Header */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-10 no-print">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-7 h-7 rounded-md bg-brand-500 flex items-center justify-center">
               <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -129,67 +133,105 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
               </svg>
             </div>
             <span className="font-semibold text-slate-700">RansomReady</span>
-            <span className="text-slate-400 text-sm">· {orgInfo.name}</span>
+            <span className="text-slate-400 text-sm hidden sm:inline">- {orgInfo.name}</span>
           </div>
-          <div className="flex gap-3">
-            <button
-              onClick={onRestart}
-              className="px-4 py-2 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors"
-            >
+          <div className="flex gap-2">
+            <button onClick={onRestart} className="px-3 py-1.5 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
               Start over
             </button>
             <button
-              onClick={handlePrint}
-              className="flex items-center gap-2 bg-brand-500 hover:bg-brand-600 text-white font-semibold px-5 py-2 rounded-lg text-sm transition-colors"
+              onClick={handlePrintSection}
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.056 48.056 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
               </svg>
-              Print / Save PDF
+              Print this section
             </button>
+            <button
+              onClick={handlePrintAll}
+              className="flex items-center gap-1.5 bg-brand-500 hover:bg-brand-600 text-white font-semibold px-4 py-1.5 rounded-lg text-sm transition-colors"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0110.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0l.229 2.523a1.125 1.125 0 01-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0021 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 00-1.913-.247M6.34 18H5.25A2.25 2.25 0 013 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.056 48.056 0 011.913-.247m10.5 0a48.536 48.536 0 00-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5zm-3 0h.008v.008H15V10.5z" />
+              </svg>
+              Print full pack
+            </button>
+          </div>
+        </div>
+
+        {/* Tab bar */}
+        <div className="border-t border-slate-100">
+          <div className="max-w-5xl mx-auto px-6">
+            <div className="flex overflow-x-auto">
+              {TABS.map((tab, i) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(i)}
+                  className={`flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
+                    activeTab === i
+                      ? 'border-brand-500 text-brand-600'
+                      : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </header>
 
-      <div ref={packRef} className="max-w-5xl mx-auto px-6 py-10 space-y-10">
+      {/* Print-only org header */}
+      <div className="print-only px-8 py-6 border-b border-slate-200">
+        <p className="text-xs text-slate-400 uppercase font-semibold tracking-wide mb-1">Ransomware Preparedness Pack</p>
+        <h1 className="text-2xl font-bold text-slate-900">{orgInfo.name}</h1>
+        <p className="text-slate-500 text-sm">{orgInfo.sector} - {orgInfo.size} - {orgInfo.date}</p>
+      </div>
 
-        {/* ── COVER PAGE ───────────────────────────────────────────── */}
-        <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          {/* Cover colour band */}
-          <div className={`${cfg.bgColor} border-b ${cfg.borderColor} px-8 py-6 flex items-start justify-between`}>
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">Ransomware Preparedness Pack</p>
-              <h1 className="text-2xl font-bold text-slate-900">{orgInfo.name}</h1>
-              <p className="text-slate-500 text-sm mt-1">{orgInfo.sector} · {orgInfo.size} · {orgInfo.date}</p>
-            </div>
-            <div className="no-print">
+      <div className="max-w-5xl mx-auto px-6 py-8">
+
+        {/* ── TAB 0: READINESS SCORE ───────────────────────────────── */}
+        <div className={sectionClass(0)}>
+          <SectionHeader number="1" title="Readiness Score" />
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+            <div className={`${cfg.bgColor} border-b ${cfg.borderColor} px-8 py-6 flex items-start justify-between`}>
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">{orgInfo.name}</h2>
+                <p className="text-slate-500 text-sm mt-1">{orgInfo.sector} - {orgInfo.size} - {orgInfo.date}</p>
+                <div className={`mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold ${cfg.bgColor} ${cfg.textColor} border ${cfg.borderColor}`}>
+                  {cfg.label}
+                </div>
+              </div>
               <ScoreGauge percent={result.percent} band={result.band} />
             </div>
-            {/* Print-only score */}
-            <div className="print-only text-right">
-              <div className="text-4xl font-bold text-slate-900">{result.percent}%</div>
-              <div className={`text-sm font-semibold ${cfg.textColor}`}>{cfg.label}</div>
+            <div className="px-8 py-6 grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-base font-semibold text-slate-800 mb-2">{cfg.headline}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed">{cfg.summary}</p>
+              </div>
+              <div className="space-y-3">
+                {result.categoryResults.map(cat => (
+                  <CategoryBar key={cat.category} label={cat.label} category={cat.category} percent={cat.percent} band={cat.band} />
+                ))}
+              </div>
             </div>
           </div>
-
-          <div className="px-8 py-6 grid md:grid-cols-2 gap-8">
-            {/* Summary */}
-            <div>
-              <h2 className="text-base font-semibold text-slate-800 mb-2">{cfg.headline}</h2>
-              <p className="text-slate-600 text-sm leading-relaxed">{cfg.summary}</p>
-            </div>
-            {/* Category bars */}
-            <div className="space-y-3">
-              {result.categoryResults.map(cat => (
-                <CategoryBar key={cat.category} label={cat.label} category={cat.category} percent={cat.percent} band={cat.band} />
+          <div className="mt-6 bg-white border border-slate-200 rounded-xl p-5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-3">Score bands</p>
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+              {(['critical', 'high', 'moderate', 'good', 'strong'] as const).map(b => (
+                <div key={b} className={`rounded-lg px-3 py-2 text-center ${BANDS[b].bgColor} border ${BANDS[b].borderColor}`}>
+                  <p className={`text-xs font-semibold ${BANDS[b].textColor}`}>{BANDS[b].label}</p>
+                </div>
               ))}
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* ── SECTION 1: 30-DAY ACTION PLAN ───────────────────────── */}
-        <section className="print-break">
-          <SectionHeader number="1" title="Your 30-Day Action Plan" />
+        {/* ── TAB 1: 30-DAY ACTION PLAN ───────────────────────────── */}
+        <div className={sectionClass(1)}>
+          <SectionHeader number="2" title="Your 30-Day Action Plan" />
           <p className="text-slate-500 text-sm mb-6">
             These actions are personalised based on your assessment results. Start with Week 1 items - they address your most critical gaps.
           </p>
@@ -203,12 +245,8 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                       <div className="flex items-start justify-between gap-4 mb-2">
                         <h4 className="font-semibold text-slate-800 text-sm leading-snug">{item.title}</h4>
                         <div className="flex items-center gap-2 flex-shrink-0">
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${CAT_COLORS[item.category]}`}>
-                            {item.category}
-                          </span>
-                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${EFFORT_COLORS[item.effort]}`}>
-                            {item.effort} effort
-                          </span>
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${CAT_COLORS[item.category]}`}>{item.category}</span>
+                          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${EFFORT_COLORS[item.effort]}`}>{item.effort} effort</span>
                         </div>
                       </div>
                       <p className="text-slate-600 text-sm leading-relaxed">{item.detail}</p>
@@ -218,32 +256,30 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
-        {/* ── SECTION 2: FIRST HOUR CHECKLIST ─────────────────────── */}
-        <section className="print-break">
-          <SectionHeader number="2" title="First Hour Response Checklist" />
+        {/* ── TAB 2: FIRST HOUR CHECKLIST ─────────────────────────── */}
+        <div className={sectionClass(2)}>
+          <SectionHeader number="3" title="First Hour Response Checklist" />
           <div className="bg-red-50 border border-red-200 rounded-xl px-6 py-4 mb-6">
             <p className="text-red-700 text-sm font-medium">
-              This checklist is for use in the first 60 minutes after you suspect a ransomware attack. Print this page and keep a copy accessible offline.
+              For use in the first 60 minutes after you suspect a ransomware attack. Print this page and keep a copy accessible offline.
             </p>
           </div>
           <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
             {[
               {
-                phase: 'Immediately (0–10 minutes)',
-                color: 'bg-red-500',
+                phase: 'Immediately (0-10 minutes)', color: 'bg-red-500',
                 steps: [
                   'Do NOT pay the ransom. Do not attempt to negotiate with attackers yourself.',
                   'Do NOT turn off affected computers - preserve them for forensic investigation unless advised by IT.',
                   'Disconnect affected devices from the network (unplug the ethernet cable or disable Wi-Fi).',
-                  'Do NOT try to delete files or "fix" anything yourself.',
+                  'Do NOT try to delete files or fix anything yourself.',
                   'Alert your designated cyber incident lead or senior manager immediately.',
                 ],
               },
               {
-                phase: 'First 15 minutes',
-                color: 'bg-orange-400',
+                phase: 'First 15 minutes', color: 'bg-orange-400',
                 steps: [
                   'Call your IT support provider or managed service provider. Have your emergency contact card ready.',
                   'Photograph the ransom note on screen with your phone - do not dismiss it.',
@@ -253,23 +289,21 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                 ],
               },
               {
-                phase: 'Within 30 minutes',
-                color: 'bg-amber-400',
+                phase: 'Within 30 minutes', color: 'bg-amber-400',
                 steps: [
                   'Notify senior leadership and key decision-makers.',
                   'Contact your cyber insurer (if you have one) - many policies require prompt notification.',
                   'Check whether your backups are accessible and whether they appear unaffected.',
                   'Consider whether any partners, clients, or stakeholders may be affected and need to be informed.',
-                  'Assign one person to keep a written incident log - date/time every action taken.',
+                  'Assign one person to keep a written incident log - date and time every action taken.',
                 ],
               },
               {
-                phase: 'Within 60 minutes',
-                color: 'bg-blue-500',
+                phase: 'Within 60 minutes', color: 'bg-blue-500',
                 steps: [
                   'Report the incident to national cybersecurity authorities (NCSC in UK; CISA in US; local equivalent).',
                   'Assess whether personal data may have been compromised - this may trigger a legal reporting obligation.',
-                  'Draft a holding statement for staff: acknowledge an incident has occurred, state that it is being managed, ask staff not to discuss externally.',
+                  'Draft a holding statement for staff: acknowledge an incident has occurred, state that it is being managed, ask staff not to discuss it externally.',
                   'Begin working with IT support on a recovery plan. Confirm the scope of the attack.',
                   'Do not communicate publicly or via social media until you have a clear picture and a communications plan.',
                 ],
@@ -290,24 +324,22 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
               </div>
             ))}
           </div>
-        </section>
+        </div>
 
-        {/* ── SECTION 3: BOARD BRIEFING ────────────────────────────── */}
-        <section className="print-break">
-          <SectionHeader number="3" title="Board Briefing - Ransomware Preparedness" />
+        {/* ── TAB 3: BOARD BRIEFING ────────────────────────────────── */}
+        <div className={sectionClass(3)}>
+          <SectionHeader number="4" title="Board Briefing - Ransomware Preparedness" />
           <div className="bg-white border border-slate-200 rounded-xl p-8 space-y-6 text-sm leading-relaxed text-slate-700">
             <div className="border-b border-slate-100 pb-6">
               <p className="text-xs text-slate-400 uppercase font-semibold tracking-wide mb-1">Prepared for board / trustees</p>
               <h3 className="text-xl font-bold text-slate-900">{orgInfo.name} - Cyber Risk Summary</h3>
               <p className="text-slate-500">{orgInfo.date}</p>
             </div>
-
             <div>
               <h4 className="font-semibold text-slate-800 mb-2">What is ransomware and why does it matter to us?</h4>
               <p>Ransomware is a type of cyberattack in which criminals encrypt an organisation's files and demand payment to restore access. Attacks increasingly target charities, non-profits, and community organisations - not because they are high-profile, but because they often have weaker defences and handle sensitive data including personal records, financial information, and beneficiary details.</p>
               <p className="mt-2">The consequences of an attack can include: inability to operate for days or weeks; financial loss; reputational damage; legal obligations if personal data is compromised; and in some cases, permanent loss of critical records.</p>
             </div>
-
             <div>
               <h4 className="font-semibold text-slate-800 mb-2">Our current readiness</h4>
               <p>Based on a structured self-assessment completed on {orgInfo.date}, {orgInfo.name} achieved a readiness score of <strong>{result.percent}%</strong>, placing us in the <strong className={cfg.textColor}>{cfg.label}</strong> band.</p>
@@ -327,7 +359,6 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                 ))}
               </div>
             </div>
-
             <div>
               <h4 className="font-semibold text-slate-800 mb-2">Recommended board-level actions</h4>
               <ol className="list-decimal list-inside space-y-1.5 text-slate-700">
@@ -338,16 +369,15 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                 <li>Ensure this topic is included as a standing item on at least an annual basis.</li>
               </ol>
             </div>
-
             <div className="border-t border-slate-100 pt-4">
               <p className="text-slate-500 text-xs">This briefing is based on a self-assessment tool and does not constitute a professional security audit. For high-risk environments, consider engaging a qualified cybersecurity provider for a formal assessment.</p>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* ── SECTION 4: STAFF AWARENESS GUIDE ────────────────────── */}
-        <section className="print-break">
-          <SectionHeader number="4" title="Staff Awareness Guide" />
+        {/* ── TAB 4: STAFF AWARENESS GUIDE ────────────────────────── */}
+        <div className={sectionClass(4)}>
+          <SectionHeader number="5" title="Staff Awareness Guide" />
           <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
             <div className="bg-brand-500 px-8 py-5">
               <h3 className="text-white font-bold text-lg">Protecting {orgInfo.name} from ransomware</h3>
@@ -358,14 +388,13 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                 <h4 className="font-semibold text-slate-800 mb-2">What is ransomware?</h4>
                 <p>Ransomware is malicious software that locks your files and demands payment to get them back. It usually gets in through a phishing email - a message that looks legitimate but contains a dangerous link or attachment. Once one computer is infected, it can spread quickly across a network.</p>
               </div>
-
               <div>
                 <h4 className="font-semibold text-slate-800 mb-2">How to spot a phishing email</h4>
                 <ul className="space-y-2">
                   {[
-                    'The sender\'s email address looks odd or doesn\'t match the organisation it claims to be from',
+                    "The sender's email address looks odd or does not match the organisation it claims to be from",
                     'There is unexpected urgency - "Act now", "Your account will be closed", "Invoice overdue"',
-                    'The email asks you to click a link or open an attachment you weren\'t expecting',
+                    'The email asks you to click a link or open an attachment you were not expecting',
                     'Something feels off - trust your instincts and check before clicking',
                     'Hover over links before clicking - the real destination often tells a different story',
                   ].map((tip, i) => (
@@ -378,7 +407,6 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                   ))}
                 </ul>
               </div>
-
               <div>
                 <h4 className="font-semibold text-slate-800 mb-2">What you should always do</h4>
                 <ul className="space-y-1.5">
@@ -398,7 +426,6 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                   ))}
                 </ul>
               </div>
-
               <div className="bg-red-50 border border-red-200 rounded-lg p-4">
                 <h4 className="font-semibold text-red-700 mb-2">If you think something has gone wrong</h4>
                 <ol className="list-decimal list-inside space-y-1.5 text-red-700">
@@ -413,23 +440,19 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                   <p className="text-red-700 font-medium mt-1">Their number: ____________________________</p>
                 </div>
               </div>
-
-              <div>
-                <h4 className="font-semibold text-slate-800 mb-2">Remember</h4>
-                <p className="bg-slate-50 border border-slate-200 rounded-lg p-4 font-medium text-slate-700 text-center">
-                  Reporting a mistake early is never the wrong thing to do. It can be the difference between a small problem and a major incident.
-                </p>
-              </div>
+              <p className="bg-slate-50 border border-slate-200 rounded-lg p-4 font-medium text-slate-700 text-center">
+                Reporting a mistake early is never the wrong thing to do. It can be the difference between a small problem and a major incident.
+              </p>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* ── SECTION 5: TABLETOP EXERCISE ─────────────────────────── */}
-        <section className="print-break">
-          <SectionHeader number="5" title="Tabletop Exercise" />
+        {/* ── TAB 5: TABLETOP EXERCISE ─────────────────────────────── */}
+        <div className={sectionClass(5)}>
+          <SectionHeader number="6" title="Tabletop Exercise" />
           <div className="bg-amber-50 border border-amber-200 rounded-xl px-6 py-4 mb-6">
             <p className="text-amber-800 text-sm">
-              <strong>How to use this exercise:</strong> Gather your leadership team (6–10 people, 60–90 minutes). Assign a facilitator to read the scenario and inject events. Everyone else responds as they would in a real incident. There are no right answers - the goal is to find gaps and build muscle memory.
+              <strong>How to use this exercise:</strong> Gather your leadership team (6-10 people, 60-90 minutes). Assign a facilitator to read the scenario and inject events. Everyone else responds as they would in a real incident. There are no right answers - the goal is to find gaps and build muscle memory.
             </p>
           </div>
           <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
@@ -441,10 +464,9 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
               <div>
                 <h4 className="font-semibold text-slate-800 mb-2">Opening situation</h4>
                 <p className="text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-4">
-                  {scenario.scenario.replace("your organisation", orgInfo.name)}
+                  {scenario.scenario.replace('your organisation', orgInfo.name)}
                 </p>
               </div>
-
               <div>
                 <h4 className="font-semibold text-slate-800 mb-3">Facilitator injects - read these aloud at the times shown</h4>
                 <div className="space-y-3">
@@ -456,14 +478,13 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                   ))}
                 </div>
               </div>
-
               <div>
                 <h4 className="font-semibold text-slate-800 mb-3">Discussion questions</h4>
                 <ol className="space-y-3">
                   {scenario.discussionQuestions.map((q, i) => (
                     <li key={i} className="flex gap-3 items-start text-slate-700">
                       <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 text-brand-700 text-xs font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
-                      <div>
+                      <div className="flex-1">
                         <p>{q}</p>
                         <div className="mt-2 border-b border-dashed border-slate-200 h-6" />
                       </div>
@@ -471,7 +492,6 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                   ))}
                 </ol>
               </div>
-
               <div className="border-t border-slate-100 pt-4">
                 <h4 className="font-semibold text-slate-800 mb-2">After the exercise - capture your findings</h4>
                 <div className="grid grid-cols-2 gap-4">
@@ -487,64 +507,9 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
               </div>
             </div>
           </div>
-        </section>
-
-        {/* ── SECTION 6: AI CODING EXPLANATION ─────────────────────── */}
-        <section className="print-break">
-          <SectionHeader number="6" title="How This Tool Was Built" />
-          <div className="bg-white border border-slate-200 rounded-xl p-8 text-sm leading-relaxed text-slate-700 space-y-4">
-            <p>RansomReady was built using AI-assisted coding during the Virtual Routes Ransomware Defence Summer Bootcamp (Amsterdam, June–July 2026). The tool was designed, scaffolded, and refined using <strong>Claude Code</strong> - Anthropic's AI coding assistant - over a 2-day sprint.</p>
-
-            <div>
-              <h4 className="font-semibold text-slate-800 mb-2">What the AI did</h4>
-              <ul className="space-y-1.5 list-disc list-inside text-slate-600">
-                <li>Generated the initial project structure (React + TypeScript + Vite + Tailwind)</li>
-                <li>Scaffolded all UI components and pages based on natural language specifications</li>
-                <li>Helped write the 15 assessment questions and answer scoring logic</li>
-                <li>Generated the rule-based recommendation templates for each risk category</li>
-                <li>Produced the tabletop exercise scenarios and inject events</li>
-                <li>Iterated on layout, visual design, and print styles based on feedback</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-slate-800 mb-2">What humans did</h4>
-              <ul className="space-y-1.5 list-disc list-inside text-slate-600">
-                <li>Defined the product direction, scope, and constraints</li>
-                <li>Reviewed and validated all cybersecurity guidance for accuracy</li>
-                <li>Tested the tool against real user flows and refined based on feedback</li>
-                <li>Made all design and content decisions - AI was the builder, not the architect</li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="font-semibold text-slate-800 mb-2">Important notes</h4>
-              <ul className="space-y-1.5 list-disc list-inside text-slate-600">
-                <li>This tool runs entirely in the browser - no data is transmitted or stored</li>
-                <li>All scoring is rule-based - there is no LLM involved in the output generation</li>
-                <li>The recommendations are general guidance, not a professional security audit</li>
-                <li>No external APIs are called at any point during use</li>
-              </ul>
-            </div>
-
-            <div className="bg-slate-50 border border-slate-200 rounded-lg p-4 text-xs text-slate-500">
-              Built at the Virtual Routes Ransomware Defence Bootcamp · Amsterdam Business School · June 2026 · Powered by Claude Code (Anthropic)
-            </div>
-          </div>
-        </section>
+        </div>
 
       </div>
-    </div>
-  )
-}
-
-function SectionHeader({ number, title }: { number: string; title: string }) {
-  return (
-    <div className="flex items-center gap-4 mb-5">
-      <div className="w-9 h-9 rounded-lg bg-slate-900 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 tabular-nums">
-        {number}
-      </div>
-      <h2 className="text-xl font-bold text-slate-900">{title}</h2>
     </div>
   )
 }

@@ -127,7 +127,12 @@ All logic is rule-based. There is no AI or LLM involved in generating the output
 
 ## Print and export
 
-From the results page, click **Print / Save PDF**. The layout is optimised for A4 with section page breaks. All screen-only navigation elements are hidden in print view.
+The results page is split into six tabbed sections. Each tab can be read independently or printed on its own.
+
+- **Print this section** - prints only the currently visible tab
+- **Print full pack** - prints all six sections in sequence
+
+Both options use the browser's built-in print dialog, which supports saving to PDF.
 
 ---
 
@@ -145,7 +150,30 @@ Please keep pull requests focused on a single change. For larger changes, open a
 
 ## Built with AI-assisted coding
 
-This tool was scaffolded and built using Claude Code (Anthropic) during a 2-day bootcamp sprint. The AI generated component structure, scoring logic, and output templates based on natural language specifications. All cybersecurity content was reviewed and validated by the team. No AI is involved at runtime.
+RansomReady was designed and built using **Claude Code** (Anthropic) during a 2-day sprint at the Virtual Routes Ransomware Defence Summer Bootcamp, Amsterdam Business School, June 2026.
+
+### What the AI did
+
+- Generated the initial project structure (React, TypeScript, Vite, Tailwind CSS)
+- Scaffolded all UI components and pages from natural language specifications
+- Wrote the 15 assessment questions and answer scoring logic
+- Generated the rule-based recommendation templates for each risk category
+- Produced the tabletop exercise scenarios and facilitator inject events
+- Iterated on layout, visual design, and print styles based on feedback
+
+### What the team did
+
+- Defined the product direction, scope, and constraints
+- Reviewed and validated all cybersecurity guidance for accuracy and appropriateness
+- Tested the tool against real user flows and refined based on feedback
+- Made all design and content decisions - the AI was the builder, not the decision-maker
+
+### Important notes
+
+- The tool runs entirely in the browser - no data is transmitted or stored at any point
+- All scoring is rule-based - no LLM is involved in generating the output at runtime
+- The recommendations are general guidance and do not constitute a professional security audit
+- No external APIs are called during use
 
 ---
 
