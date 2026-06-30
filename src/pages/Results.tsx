@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import type { ScoredResult } from '../engine/score'
 import { BANDS } from '../engine/score'
 import type { OrgInfo } from '../App'
 import { TABLETOP_SCENARIOS } from '../data/recommendations'
 import type { Category } from '../data/questions'
 import CategoryIcon from '../components/CategoryIcon'
+import { fetchCyberSummary } from '../services/cyberSummary'
 
 interface Props {
   result: ScoredResult
@@ -100,9 +101,39 @@ function SectionHeader({ number, title }: { number: string; title: string }) {
 
 export default function Results({ result, orgInfo, onRestart }: Props) {
   const [activeTab, setActiveTab] = useState(0)
+  const [dynamicSummary, setDynamicSummary] = useState('')
+  const [summaryStatus, setSummaryStatus] = useState<'loading' | 'ready' | 'fallback'>('loading')
   const cfg = BANDS[result.band]
   const scenario = TABLETOP_SCENARIOS[0]
   const byWeek = [1, 2, 3, 4].map(w => ({ week: w, items: result.actionPlan.filter(a => a.week === w) }))
+  const summary = dynamicSummary || cfg.summary
+
+  const generateSummary = useCallback((controller: AbortController) => {
+    setDynamicSummary('')
+    setSummaryStatus('loading')
+
+    fetchCyberSummary({ orgInfo, result }, controller.signal)
+      .then(text => {
+        setDynamicSummary(text)
+        setSummaryStatus('ready')
+      })
+      .catch(error => {
+        if (error instanceof DOMException && error.name === 'AbortError') return
+        console.warn('Using fallback cyber summary:', error)
+        setSummaryStatus('fallback')
+      })
+  }, [orgInfo, result])
+
+  useEffect(() => {
+    const controller = new AbortController()
+    generateSummary(controller)
+
+    return () => controller.abort()
+  }, [generateSummary])
+
+  function handleRetrySummary() {
+    generateSummary(new AbortController())
+  }
 
   function handlePrintSection() {
     document.body.classList.add('print-single')
@@ -208,7 +239,24 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
             <div className="px-8 py-6 grid md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-base font-semibold text-slate-800 mb-2">{cfg.headline}</h3>
-                <p className="text-slate-600 text-sm leading-relaxed">{cfg.summary}</p>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  {summaryStatus === 'loading' ? 'Generating a tailored cyber risk summary...' : summary}
+                </p>
+                {summaryStatus === 'ready' && (
+                  <p className="mt-2 text-xs font-medium text-brand-600 no-print">AI-generated summary</p>
+                )}
+                {summaryStatus === 'fallback' && (
+                  <div className="mt-2 flex items-center gap-3 no-print">
+                    <p className="text-xs text-slate-400">Static summary shown because the dynamic summary API is unavailable.</p>
+                    <button
+                      type="button"
+                      onClick={handleRetrySummary}
+                      className="text-xs font-semibold text-brand-600 hover:text-brand-700"
+                    >
+                      Retry AI summary
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="space-y-3">
                 {result.categoryResults.map(cat => (
@@ -345,7 +393,19 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
               <p>Based on a structured self-assessment completed on {orgInfo.date}, {orgInfo.name} achieved a readiness score of <strong>{result.percent}%</strong>, placing us in the <strong className={cfg.textColor}>{cfg.label}</strong> band.</p>
               <div className={`mt-3 p-4 rounded-lg ${cfg.bgColor} border ${cfg.borderColor}`}>
                 <p className={`font-medium ${cfg.textColor}`}>{cfg.headline}</p>
-                <p className={`mt-1 ${cfg.textColor} opacity-80`}>{cfg.summary}</p>
+                <p className={`mt-1 ${cfg.textColor} opacity-80`}>{summary}</p>
+                {summaryStatus === 'ready' && (
+                  <p className={`mt-2 text-xs font-medium ${cfg.textColor} no-print`}>AI-generated summary</p>
+                )}
+                {summaryStatus === 'fallback' && (
+                  <button
+                    type="button"
+                    onClick={handleRetrySummary}
+                    className={`mt-2 text-xs font-semibold ${cfg.textColor} no-print`}
+                  >
+                    Retry AI summary
+                  </button>
+                )}
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3">
                 {result.categoryResults.map(cat => (

@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "node scripts/dev-with-api.mjs",
+    "dev:vite": "vite",
+    "dev:api": "node scripts/dev-with-api.mjs",
     "build": "tsc && vite build",
     "preview": "vite preview"
   },

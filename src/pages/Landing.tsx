@@ -100,7 +100,7 @@ export default function Landing({ onStart }: Props) {
           <div className="max-w-5xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-12 items-center">
             <div>
               <div className="inline-flex items-center gap-2 bg-brand-50 text-brand-700 text-sm font-medium px-3 py-1 rounded-full mb-5">
-                <span>Free · No account required · Works offline</span>
+                <span>Free · No account required · Local scoring</span>
               </div>
               <h1 className="text-4xl font-bold text-slate-900 leading-tight mb-4">
                 Know your ransomware risk.<br />
@@ -113,7 +113,7 @@ export default function Landing({ onStart }: Props) {
                 {[
                   'Takes under 10 minutes',
                   'Designed for non-technical staff',
-                  'No data is stored or transmitted',
+                  'Summary API is optional and configurable',
                   'All outputs are printable',
                 ].map(item => (
                   <li key={item} className="flex items-center gap-2">
