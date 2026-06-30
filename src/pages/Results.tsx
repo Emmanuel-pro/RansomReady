@@ -29,25 +29,25 @@ const WEEK_LABELS = [
 ]
 
 const EFFORT_STYLE: Record<string, { backgroundColor: string; color: string }> = {
-  Low:    { backgroundColor: '#EEF1EE', color: '#4A5D4E' },
-  Medium: { backgroundColor: '#F5F0E6', color: '#8B6914' },
+  Low:    { backgroundColor: '#C8E5E0', color: '#2B6B5C' },
+  Medium: { backgroundColor: '#F5F0E6', color: '#7A6020' },
   High:   { backgroundColor: '#F5ECEC', color: '#802B2B' },
 }
 
 const CAT_STYLE: Record<Category, { backgroundColor: string; color: string }> = {
-  backups:   { backgroundColor: '#EEECEA', color: '#2A2725' },
-  access:    { backgroundColor: '#F4F0EA', color: '#8C857B' },
-  awareness: { backgroundColor: '#F5F0E6', color: '#8B6914' },
+  backups:   { backgroundColor: '#D5E8E4', color: '#14332D' },
+  access:    { backgroundColor: '#E3EFEC', color: '#3D6960' },
+  awareness: { backgroundColor: '#F5F0E6', color: '#7A6020' },
   response:  { backgroundColor: '#F5ECEC', color: '#802B2B' },
-  patching:  { backgroundColor: '#EEF1EE', color: '#4A5D4E' },
+  patching:  { backgroundColor: '#C8E5E0', color: '#2B6B5C' },
 }
 
 const BAND_GAUGE_COLOR: Record<string, string> = {
   critical: '#802B2B',
   high:     '#94442A',
-  moderate: '#8B6914',
-  good:     '#4A5D4E',
-  strong:   '#2A2725',
+  moderate: '#7A6020',
+  good:     '#2B6B5C',
+  strong:   '#14332D',
 }
 
 function ScoreGauge({ percent, band }: { percent: number; band: keyof typeof BANDS }) {
@@ -59,14 +59,14 @@ function ScoreGauge({ percent, band }: { percent: number; band: keyof typeof BAN
     <div className="flex flex-col items-center">
       <svg width="160" height="90" viewBox="0 0 160 90" className="overflow-visible">
         <path d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`}
-          fill="none" stroke="#EDE8E2" strokeWidth="10" strokeLinecap="round" />
+          fill="none" stroke="#B8D8D3" strokeWidth="10" strokeLinecap="round" />
         <path d={`M ${cx - r} ${cy} A ${r} ${r} 0 0 1 ${cx + r} ${cy}`}
           fill="none" stroke={color} strokeWidth="10" strokeLinecap="round"
           strokeDasharray={`${circumference} ${circumference}`}
           strokeDashoffset={offset}
           style={{ transition: 'stroke-dashoffset 1s ease' }} />
-        <text x={cx} y={cy - 8}  textAnchor="middle" fontSize="28" fontWeight="700" fill="#2A2725">{percent}%</text>
-        <text x={cx} y={cy + 12} textAnchor="middle" fontSize="11" fill="#8C857B">readiness score</text>
+        <text x={cx} y={cy - 8}  textAnchor="middle" fontSize="28" fontWeight="700" fill="#14332D">{percent}%</text>
+        <text x={cx} y={cy + 12} textAnchor="middle" fontSize="11" fill="#3D6960">readiness score</text>
       </svg>
       <span
         className="mt-2 px-3 py-1 rounded text-sm font-semibold"
@@ -104,7 +104,7 @@ function SectionHeader({ number, title }: { number: string; title: string }) {
     <div className="flex items-center gap-4 mb-5">
       <div
         className="w-9 h-9 rounded flex items-center justify-center text-canvas font-bold text-sm flex-shrink-0 tabular-nums"
-        style={{ backgroundColor: '#2A2725' }}
+        style={{ backgroundColor: '#14332D' }}
       >
         {number}
       </div>
@@ -179,7 +179,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
         </div>
 
         {/* Tab bar */}
-        <div style={{ borderTop: '1px solid #EDE8E2' }}>
+        <div style={{ borderTop: '1px solid #B8D8D3' }}>
           <div className="max-w-5xl mx-auto px-8">
             <div className="flex overflow-x-auto">
               {TABS.map((tab, i) => (
@@ -189,8 +189,8 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                   className="flex-shrink-0 px-4 py-3 text-sm font-medium border-b-2 transition-colors duration-200 whitespace-nowrap"
                   style={
                     activeTab === i
-                      ? { borderColor: '#2A2725', color: '#2A2725' }
-                      : { borderColor: 'transparent', color: '#8C857B' }
+                      ? { borderColor: '#14332D', color: '#14332D' }
+                      : { borderColor: 'transparent', color: '#3D6960' }
                   }
                 >
                   {tab.label}
@@ -202,7 +202,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
       </header>
 
       {/* Print-only org header */}
-      <div className="print-only px-8 py-6" style={{ borderBottom: '1px solid #C4BAB0' }}>
+      <div className="print-only px-8 py-6" style={{ borderBottom: '1px solid #7AADA6' }}>
         <p className="text-xs text-ink-faint uppercase font-semibold tracking-widest mb-1">Ransomware Preparedness Pack</p>
         <h1 className="font-display text-2xl font-semibold text-ink">{orgInfo.name}</h1>
         <p className="text-ink-muted text-sm">{orgInfo.sector} - {orgInfo.size} - {orgInfo.date}</p>
@@ -324,7 +324,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
             {[
               {
                 phase: 'Immediately (0-10 minutes)',
-                bg: '#802B2B', fg: '#FBF9F6',
+                bg: '#802B2B', fg: '#F3F8F7',
                 steps: [
                   'Do NOT pay the ransom. Do not attempt to negotiate with attackers yourself.',
                   'Do NOT turn off affected computers - preserve them for forensic investigation unless advised by IT.',
@@ -335,7 +335,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
               },
               {
                 phase: 'First 15 minutes',
-                bg: '#94442A', fg: '#FBF9F6',
+                bg: '#94442A', fg: '#F3F8F7',
                 steps: [
                   'Call your IT support provider or managed service provider. Have your emergency contact card ready.',
                   'Photograph the ransom note on screen with your phone - do not dismiss it.',
@@ -346,7 +346,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
               },
               {
                 phase: 'Within 30 minutes',
-                bg: '#8B6914', fg: '#FBF9F6',
+                bg: '#7A6020', fg: '#F3F8F7',
                 steps: [
                   'Notify senior leadership and key decision-makers.',
                   'Contact your cyber insurer (if you have one) - many policies require prompt notification.',
@@ -357,7 +357,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
               },
               {
                 phase: 'Within 60 minutes',
-                bg: '#4A5D4E', fg: '#FBF9F6',
+                bg: '#2B6B5C', fg: '#F3F8F7',
                 steps: [
                   'Report the incident to national cybersecurity authorities (NCSC in UK; CISA in US; local equivalent).',
                   'Assess whether personal data may have been compromised - this may trigger a legal reporting obligation.',
@@ -367,7 +367,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                 ],
               },
             ].map(block => (
-              <div key={block.phase} style={{ borderBottom: '1px solid #EDE8E2' }} className="last:border-0">
+              <div key={block.phase} style={{ borderBottom: '1px solid #B8D8D3' }} className="last:border-0">
                 <div className="px-5 py-2.5" style={{ backgroundColor: block.bg }}>
                   <h3 className="font-semibold text-sm" style={{ color: block.fg }}>{block.phase}</h3>
                 </div>
@@ -376,7 +376,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                     <li key={i} className="flex items-start gap-3 text-sm text-ink-muted">
                       <div
                         className="mt-0.5 w-5 h-5 rounded flex-shrink-0"
-                        style={{ border: '1.5px solid #C4BAB0' }}
+                        style={{ border: '1.5px solid #7AADA6' }}
                       />
                       {step}
                     </li>
@@ -391,7 +391,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
         <div className={sectionClass(3)}>
           <SectionHeader number="4" title="Board Briefing - Ransomware Preparedness" />
           <div className="bg-surface rounded shadow-card p-8 space-y-6 text-sm leading-relaxed text-ink-muted">
-            <div style={{ borderBottom: '1px solid #EDE8E2' }} className="pb-6">
+            <div style={{ borderBottom: '1px solid #B8D8D3' }} className="pb-6">
               <p className="text-xs text-ink-faint uppercase font-medium tracking-widest mb-1">Prepared for board / trustees</p>
               <h3 className="font-display text-2xl font-semibold text-ink tracking-display">{orgInfo.name} - Cyber Risk Summary</h3>
               <p className="text-ink-faint text-sm mt-1">{orgInfo.date}</p>
@@ -439,7 +439,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                 <li>Ensure this topic is included as a standing item on at least an annual basis.</li>
               </ol>
             </div>
-            <div style={{ borderTop: '1px solid #EDE8E2' }} className="pt-4">
+            <div style={{ borderTop: '1px solid #B8D8D3' }} className="pt-4">
               <p className="text-ink-faint text-xs">This briefing is based on a self-assessment tool and does not constitute a professional security audit. For high-risk environments, consider engaging a qualified cybersecurity provider for a formal assessment.</p>
             </div>
           </div>
@@ -449,9 +449,9 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
         <div className={sectionClass(4)}>
           <SectionHeader number="5" title="Staff Awareness Guide" />
           <div className="bg-surface rounded shadow-card overflow-hidden">
-            <div className="px-8 py-5" style={{ backgroundColor: '#2A2725' }}>
+            <div className="px-8 py-5" style={{ backgroundColor: '#14332D' }}>
               <h3 className="text-canvas font-semibold text-lg">Protecting {orgInfo.name} from ransomware</h3>
-              <p className="text-sm mt-1" style={{ color: '#C4BAB0' }}>A plain-language guide for all staff and volunteers</p>
+              <p className="text-sm mt-1" style={{ color: '#7AADA6' }}>A plain-language guide for all staff and volunteers</p>
             </div>
             <div className="px-8 py-6 space-y-6 text-sm leading-relaxed text-ink-muted">
               <div>
@@ -469,7 +469,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                     'Hover over links before clicking - the real destination often tells a different story',
                   ].map((tip, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <svg className="mt-0.5 w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: '#8B6914' }}>
+                      <svg className="mt-0.5 w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ color: '#7A6020' }}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                       </svg>
                       {tip}
@@ -488,7 +488,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                     'Keep your devices updated - do not ignore software update notifications',
                   ].map((tip, i) => (
                     <li key={i} className="flex items-start gap-2">
-                      <svg className="mt-0.5 w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} style={{ color: '#4A5D4E' }}>
+                      <svg className="mt-0.5 w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5} style={{ color: '#2B6B5C' }}>
                         <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                       </svg>
                       {tip}
@@ -521,13 +521,13 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
         <div className={sectionClass(5)}>
           <SectionHeader number="6" title="Tabletop Exercise" />
           <div className="rounded p-4 mb-6" style={{ backgroundColor: '#F5F0E6' }}>
-            <p className="text-sm" style={{ color: '#8B6914' }}>
+            <p className="text-sm" style={{ color: '#7A6020' }}>
               <strong>How to use this exercise:</strong> Gather your leadership team (6-10 people, 60-90 minutes). Assign a facilitator to read the scenario and inject events. Everyone else responds as they would in a real incident. There are no right answers - the goal is to find gaps and build muscle memory.
             </p>
           </div>
           <div className="bg-surface rounded shadow-card overflow-hidden">
-            <div className="px-8 py-5" style={{ backgroundColor: '#2A2725' }}>
-              <p className="text-xs font-medium uppercase tracking-widest mb-1" style={{ color: '#8C857B' }}>
+            <div className="px-8 py-5" style={{ backgroundColor: '#14332D' }}>
+              <p className="text-xs font-medium uppercase tracking-widest mb-1" style={{ color: '#3D6960' }}>
                 Scenario: {scenario.title}
               </p>
               <h3 className="text-canvas font-semibold text-lg">
@@ -548,7 +548,7 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                     <div key={i} className="flex gap-4 items-start">
                       <span
                         className="flex-shrink-0 text-canvas text-xs font-mono px-2.5 py-1 rounded"
-                        style={{ backgroundColor: '#2A2725' }}
+                        style={{ backgroundColor: '#14332D' }}
                       >
                         {inject.time}
                       </span>
@@ -564,27 +564,27 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
                     <li key={i} className="flex gap-3 items-start text-ink-muted">
                       <span
                         className="flex-shrink-0 w-6 h-6 rounded text-xs font-bold flex items-center justify-center mt-0.5 text-ink"
-                        style={{ backgroundColor: '#EEECEA' }}
+                        style={{ backgroundColor: '#D5E8E4' }}
                       >
                         {i + 1}
                       </span>
                       <div className="flex-1">
                         <p>{q}</p>
-                        <div className="mt-2 border-b border-dashed h-6" style={{ borderColor: '#C4BAB0' }} />
+                        <div className="mt-2 border-b border-dashed h-6" style={{ borderColor: '#7AADA6' }} />
                       </div>
                     </li>
                   ))}
                 </ol>
               </div>
-              <div style={{ borderTop: '1px solid #EDE8E2' }} className="pt-4">
+              <div style={{ borderTop: '1px solid #B8D8D3' }} className="pt-4">
                 <h4 className="font-semibold text-ink mb-2">After the exercise - capture your findings</h4>
                 <div className="grid grid-cols-2 gap-4">
                   {['What we did well', 'Gaps we identified', 'Actions we will take', 'Who is responsible'].map(heading => (
-                    <div key={heading} className="rounded p-3" style={{ border: '1px solid #EDE8E2' }}>
+                    <div key={heading} className="rounded p-3" style={{ border: '1px solid #B8D8D3' }}>
                       <p className="text-xs font-medium text-ink-faint uppercase tracking-widest mb-2">{heading}</p>
                       <div className="space-y-1.5">
                         {[1, 2, 3].map(n => (
-                          <div key={n} className="border-b border-dashed h-6" style={{ borderColor: '#C4BAB0' }} />
+                          <div key={n} className="border-b border-dashed h-6" style={{ borderColor: '#7AADA6' }} />
                         ))}
                       </div>
                     </div>

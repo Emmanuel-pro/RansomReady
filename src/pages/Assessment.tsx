@@ -88,7 +88,7 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
       </header>
 
       {/* Section nav */}
-      <div className="bg-canvas no-print" style={{ borderBottom: '1px solid #EDE8E2' }}>
+      <div className="bg-canvas no-print" style={{ borderBottom: '1px solid #B8D8D3' }}>
         <div className="max-w-3xl mx-auto px-8 py-3">
           <div className="flex gap-2 overflow-x-auto pb-1">
             {GROUPED.map((g, i) => {
@@ -101,10 +101,10 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium whitespace-nowrap transition-all duration-200 ease-out"
                   style={
                     current
-                      ? { backgroundColor: '#2A2725', color: '#FBF9F6' }
+                      ? { backgroundColor: '#14332D', color: '#F3F8F7' }
                       : done
-                      ? { backgroundColor: '#EEF1EE', color: '#4A5D4E' }
-                      : { backgroundColor: '#F4F0EA', color: '#8C857B' }
+                      ? { backgroundColor: '#C8E5E0', color: '#2B6B5C' }
+                      : { backgroundColor: '#E3EFEC', color: '#3D6960' }
                   }
                 >
                   <CategoryIcon category={g.category} className="w-3.5 h-3.5" />
@@ -149,7 +149,7 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
                   key={q.id}
                   className="rounded shadow-card p-6 transition-shadow duration-300 ease-out"
                   style={{
-                    backgroundColor: isUnanswered ? '#F5ECEC' : '#F4F0EA',
+                    backgroundColor: isUnanswered ? '#F5ECEC' : '#E3EFEC',
                   }}
                 >
                   <p className="font-medium text-ink mb-1 leading-snug text-sm">
@@ -171,20 +171,20 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
                           className="w-full text-left px-4 py-3 rounded text-sm transition-all duration-200 ease-out"
                           style={
                             selected
-                              ? { backgroundColor: '#2A2725', color: '#FBF9F6' }
-                              : { backgroundColor: '#FBF9F6', color: '#2A2725' }
+                              ? { backgroundColor: '#14332D', color: '#F3F8F7' }
+                              : { backgroundColor: '#F3F8F7', color: '#14332D' }
                           }
                         >
                           <div className="flex items-start gap-3">
                             <div
                               className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors duration-200"
                               style={selected
-                                ? { borderColor: '#FBF9F6', backgroundColor: '#FBF9F6' }
-                                : { borderColor: '#C4BAB0', backgroundColor: 'transparent' }
+                                ? { borderColor: '#F3F8F7', backgroundColor: '#F3F8F7' }
+                                : { borderColor: '#7AADA6', backgroundColor: 'transparent' }
                               }
                             >
                               {selected && (
-                                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#2A2725' }} />
+                                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#14332D' }} />
                               )}
                             </div>
                             {opt.label}
