@@ -21,6 +21,7 @@ const GROUPED = CATEGORY_ORDER.map(cat => ({
 
 export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
   const [answers, setAnswers] = useState<Answers>({})
+  const [selectedLabels, setSelectedLabels] = useState<Record<string, string>>({})
   const [currentSection, setCurrentSection] = useState(0)
   const [touched, setTouched] = useState(false)
 
@@ -32,8 +33,9 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
   const totalAnswered = QUESTIONS.filter(q => answers[q.id] !== undefined).length
   const progress = Math.round((totalAnswered / QUESTIONS.length) * 100)
 
-  function handleAnswer(qid: string, value: number) {
+  function handleAnswer(qid: string, value: number, label: string) {
     setAnswers(prev => ({ ...prev, [qid]: value }))
+    setSelectedLabels(prev => ({ ...prev, [qid]: label }))
   }
 
   function handleNext() {
@@ -157,13 +159,12 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
                   {!q.subtext && <div className="mb-3" />}
                   <div className="space-y-2">
                     {q.options.map(opt => {
-                      const selected = answers[q.id] === opt.value && answers[q.id] !== undefined
-                      // handle duplicate values - use label as secondary key
+                      const selected = selectedLabels[q.id] === opt.label
                       const uniqueKey = `${q.id}-${opt.label}`
                       return (
                         <button
                           key={uniqueKey}
-                          onClick={() => handleAnswer(q.id, opt.value)}
+                          onClick={() => handleAnswer(q.id, opt.value, opt.label)}
                           className={`w-full text-left px-4 py-3 rounded-lg border text-sm transition-all ${
                             selected
                               ? 'border-brand-500 bg-brand-50 text-brand-800 font-medium'

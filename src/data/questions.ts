@@ -73,8 +73,8 @@ export const QUESTIONS: Question[] = [
     text: 'How do you manage who has access to sensitive files and systems?',
     options: [
       { label: 'Staff only access what they need for their role',       value: 3 },
-      { label: 'Most staff have access to most things',                 value: 1 },
-      { label: 'We have not really thought about this',                 value: 0 },
+      { label: 'Most staff have access to most things',                 value: 2 },
+      { label: 'We have not really thought about this',                 value: 1 },
       { label: 'We use shared accounts or passwords',                   value: 0 },
     ],
   },
@@ -108,10 +108,10 @@ export const QUESTIONS: Question[] = [
     category: 'awareness',
     text: 'Do staff know who to contact if they suspect a cyberattack or see something suspicious?',
     options: [
-      { label: 'Yes, there is a clear process and a named person',  value: 3 },
-      { label: 'Roughly - they would probably figure it out',       value: 2 },
-      { label: 'Not really',                                        value: 0 },
-      { label: 'No',                                                value: 0 },
+      { label: 'Yes, there is a clear process and a named person',         value: 3 },
+      { label: 'Only senior staff know who to contact',                   value: 2 },
+      { label: 'Some staff know but there is no formal process in place', value: 1 },
+      { label: 'No, there is no guidance on who to contact',              value: 0 },
     ],
   },
   {
@@ -190,7 +190,7 @@ export const QUESTIONS: Question[] = [
     options: [
       { label: 'No, all access is via organisation-managed devices',                    value: 3 },
       { label: 'Sometimes, but we have guidelines in place',                            value: 2 },
-      { label: 'Yes, and we have limited control over those devices',                   value: 0 },
+      { label: 'Yes, and we have limited control over those devices',                   value: 1 },
       { label: 'We are not sure what devices are being used to access our systems',     value: 0 },
     ],
   },
