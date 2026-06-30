@@ -4,10 +4,8 @@ export type RiskBand = 'critical' | 'high' | 'moderate' | 'good' | 'strong'
 
 export interface BandConfig {
   label: string
-  color: string
-  bgColor: string
-  borderColor: string
-  textColor: string
+  bg: string
+  text: string
   headline: string
   summary: string
 }
@@ -15,46 +13,36 @@ export interface BandConfig {
 export const BANDS: Record<RiskBand, BandConfig> = {
   critical: {
     label: 'Critical Risk',
-    color: 'red',
-    bgColor: 'bg-red-50',
-    borderColor: 'border-red-300',
-    textColor: 'text-red-700',
+    bg:    '#F5ECEC',
+    text:  '#802B2B',
     headline: 'Immediate action required',
     summary: 'Your organisation currently has very limited protection against ransomware. A basic attack could cause serious and potentially irreversible damage. The actions in this pack should be treated as urgent.',
   },
   high: {
     label: 'High Risk',
-    color: 'orange',
-    bgColor: 'bg-orange-50',
-    borderColor: 'border-orange-300',
-    textColor: 'text-orange-700',
+    bg:    '#F5EFEA',
+    text:  '#94442A',
     headline: 'Significant gaps identified',
     summary: 'There are important gaps in your defences that a ransomware attacker could exploit. This pack will help you prioritise the most important improvements over the next 30 days.',
   },
   moderate: {
     label: 'Moderate Risk',
-    color: 'amber',
-    bgColor: 'bg-amber-50',
-    borderColor: 'border-amber-300',
-    textColor: 'text-amber-700',
+    bg:    '#F5F0E6',
+    text:  '#8B6914',
     headline: 'Good foundations, gaps remain',
     summary: 'You have some important protections in place, but there are gaps that could still leave you vulnerable. Focus on the areas flagged below to strengthen your overall posture.',
   },
   good: {
     label: 'Good Posture',
-    color: 'green',
-    bgColor: 'bg-green-50',
-    borderColor: 'border-green-300',
-    textColor: 'text-green-700',
+    bg:    '#EEF1EE',
+    text:  '#4A5D4E',
     headline: 'Above average - keep improving',
     summary: 'Your organisation has solid ransomware defences in most areas. Use this pack to close the remaining gaps and maintain what you have already put in place.',
   },
   strong: {
     label: 'Strong Posture',
-    color: 'blue',
-    bgColor: 'bg-blue-50',
-    borderColor: 'border-blue-300',
-    textColor: 'text-blue-700',
+    bg:    '#EEECEA',
+    text:  '#2A2725',
     headline: 'Excellent - sustain and verify',
     summary: 'Your organisation has strong ransomware preparedness across all key areas. The priority now is testing, maintaining, and verifying that your controls remain effective over time.',
   },

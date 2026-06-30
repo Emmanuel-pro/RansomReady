@@ -4,32 +4,32 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50:  '#f0f4ff',
-          100: '#e0e9ff',
-          500: '#3b5bdb',
-          600: '#2f4ac7',
-          700: '#2541b2',
-          900: '#1a2e7a',
+        canvas:  '#FBF9F6',
+        surface: '#F4F0EA',
+        ink: {
+          DEFAULT: '#2A2725',
+          muted:   '#8C857B',
+          faint:   '#C4BAB0',
         },
-        danger: {
-          50:  '#fff5f5',
-          500: '#e03131',
-          600: '#c92a2a',
-        },
-        amber: {
-          50:  '#fff8e1',
-          500: '#f59f00',
-          600: '#e67700',
-        },
-        success: {
-          50:  '#ebfbee',
-          500: '#2f9e44',
-          600: '#2b8a3e',
-        },
+        safe:    '#4A5D4E',
+        danger:  '#802B2B',
+        warning: '#8B6914',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+        sans:  ['Inter', 'system-ui', 'sans-serif'],
+        mono:  ['"JetBrains Mono"', 'Consolas', 'monospace'],
+      },
+      boxShadow: {
+        subtle: '0 2px 24px rgba(42, 39, 37, 0.05)',
+        card:   '0 1px 8px rgba(42, 39, 37, 0.04)',
+        lift:   '0 4px 32px rgba(42, 39, 37, 0.07)',
+      },
+      letterSpacing: {
+        display: '-0.03em',
+      },
+      transitionTimingFunction: {
+        'out-smooth': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
       },
     },
   },

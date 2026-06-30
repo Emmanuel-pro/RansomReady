@@ -4,30 +4,37 @@
 
 @layer base {
   body {
-    @apply text-slate-800 antialiased;
+    @apply bg-canvas text-ink antialiased;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4 {
+    @apply tracking-tight;
+  }
+
+  input, select, textarea {
+    @apply outline-none;
+  }
+
+  * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 }
 
 @layer utilities {
   .print-only { display: none; }
+  .font-display { font-family: 'Cormorant Garamond', Georgia, serif; }
 }
 
 @media print {
-  .no-print { display: none !important; }
+  .no-print  { display: none !important; }
   .print-only { display: block !important; }
   .print-break { page-break-before: always; }
-  body { background: white !important; }
+  body { background: #FBF9F6 !important; }
 
-  /* Print full pack: show all sections regardless of active tab */
-  .result-section {
-    display: block !important;
-  }
+  .result-section { display: block !important; }
 
-  /* Print single section: hide all, then show only the active one */
-  body.print-single .result-section {
-    display: none !important;
-  }
-  body.print-single .result-section.section-active {
-    display: block !important;
-  }
+  body.print-single .result-section { display: none !important; }
+  body.print-single .result-section.section-active { display: block !important; }
 }
