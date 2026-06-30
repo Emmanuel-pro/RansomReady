@@ -18,11 +18,14 @@ const GROUPED = CATEGORY_ORDER.map(cat => ({
   questions: QUESTIONS.filter(q => q.category === cat),
 }))
 
+const BORDER     = '1px solid rgba(157, 142, 130, 0.25)'
+const BORDER_ERR = '1px solid rgba(139, 58, 58, 0.25)'
+
 export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
-  const [answers, setAnswers]           = useState<Answers>({})
+  const [answers, setAnswers]               = useState<Answers>({})
   const [selectedLabels, setSelectedLabels] = useState<Record<string, string>>({})
   const [currentSection, setCurrentSection] = useState(0)
-  const [touched, setTouched]           = useState(false)
+  const [touched, setTouched]               = useState(false)
 
   const section       = GROUPED[currentSection]
   const isLastSection = currentSection === GROUPED.length - 1
@@ -65,30 +68,30 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
     <div className="min-h-screen bg-canvas flex flex-col">
 
       {/* Header */}
-      <header className="bg-canvas shadow-card sticky top-0 z-10 no-print">
+      <header className="bg-canvas sticky top-0 z-10 no-print" style={{ borderBottom: BORDER }}>
         <div className="max-w-3xl mx-auto px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <svg className="w-4 h-4 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <svg className="w-4 h-4 text-safe" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
             <span className="text-sm font-semibold text-ink tracking-tight">RansomReady</span>
           </div>
           <div className="flex items-center gap-5">
             <span className="text-sm text-ink-muted hidden sm:block">{orgInfo.name}</span>
-            <span className="text-xs text-ink-faint tabular-nums">{totalAnswered} / {QUESTIONS.length}</span>
+            <span className="text-xs text-ink-muted tabular-nums">{totalAnswered} / {QUESTIONS.length}</span>
           </div>
         </div>
         {/* Progress bar */}
-        <div className="h-0.5 bg-surface">
+        <div className="h-px bg-surface">
           <div
-            className="h-full bg-ink transition-all duration-500 ease-out"
+            className="h-full bg-safe transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
       </header>
 
       {/* Section nav */}
-      <div className="bg-canvas no-print" style={{ borderBottom: '1px solid #B8D8D3' }}>
+      <div className="bg-canvas no-print" style={{ borderBottom: BORDER }}>
         <div className="max-w-3xl mx-auto px-8 py-3">
           <div className="flex gap-2 overflow-x-auto pb-1">
             {GROUPED.map((g, i) => {
@@ -98,13 +101,13 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
                 <button
                   key={g.category}
                   onClick={() => { setTouched(false); setCurrentSection(i) }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded text-xs font-medium whitespace-nowrap transition-all duration-200 ease-out"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 ease-out"
                   style={
                     current
-                      ? { backgroundColor: '#14332D', color: '#F3F8F7' }
+                      ? { backgroundColor: '#4C5C55', color: '#F7F4F1' }
                       : done
-                      ? { backgroundColor: '#C8E5E0', color: '#2B6B5C' }
-                      : { backgroundColor: '#E3EFEC', color: '#3D6960' }
+                      ? { backgroundColor: '#EAF0E8', color: '#4C5C55' }
+                      : { backgroundColor: '#DCCFC0', color: '#262626' }
                   }
                 >
                   <CategoryIcon category={g.category} className="w-3.5 h-3.5" />
@@ -128,10 +131,13 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
           {/* Section header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-3">
-              <div className="w-9 h-9 rounded bg-surface flex items-center justify-center text-ink-muted">
+              <div
+                className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ backgroundColor: '#EAF0E8', color: '#4C5C55' }}
+              >
                 <CategoryIcon category={section.category} className="w-5 h-5" />
               </div>
-              <span className="text-xs font-medium uppercase tracking-widest text-ink-faint">
+              <span className="text-xs font-medium uppercase tracking-widest text-ink-muted">
                 Section {currentSection + 1} of {totalSections}
               </span>
             </div>
@@ -147,17 +153,18 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
               return (
                 <div
                   key={q.id}
-                  className="rounded shadow-card p-6 transition-shadow duration-300 ease-out"
+                  className="rounded-xl p-6 transition-all duration-200 ease-out"
                   style={{
-                    backgroundColor: isUnanswered ? '#F5ECEC' : '#E3EFEC',
+                    backgroundColor: isUnanswered ? '#F9EFEF' : '#DCCFC0',
+                    border: isUnanswered ? BORDER_ERR : BORDER,
                   }}
                 >
                   <p className="font-medium text-ink mb-1 leading-snug text-sm">
-                    <span className="text-ink-faint mr-1.5 tabular-nums">{qi + 1}.</span>
+                    <span className="text-ink opacity-40 mr-1.5 tabular-nums text-xs">{qi + 1}.</span>
                     {q.text}
                   </p>
                   {q.subtext
-                    ? <p className="text-ink-muted text-xs mb-4 leading-relaxed">{q.subtext}</p>
+                    ? <p className="text-ink text-xs mb-4 leading-relaxed opacity-60">{q.subtext}</p>
                     : <div className="mb-3" />
                   }
                   <div className="space-y-2">
@@ -168,23 +175,23 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
                         <button
                           key={uniqueKey}
                           onClick={() => handleAnswer(q.id, opt.value, opt.label)}
-                          className="w-full text-left px-4 py-3 rounded text-sm transition-all duration-200 ease-out"
+                          className="w-full text-left px-4 py-3 rounded-xl text-sm transition-all duration-200 ease-out"
                           style={
                             selected
-                              ? { backgroundColor: '#14332D', color: '#F3F8F7' }
-                              : { backgroundColor: '#F3F8F7', color: '#14332D' }
+                              ? { backgroundColor: '#4C5C55', color: '#F7F4F1' }
+                              : { backgroundColor: '#F7F4F1', color: '#262626', border: BORDER }
                           }
                         >
                           <div className="flex items-start gap-3">
                             <div
-                              className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors duration-200"
+                              className="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center transition-all duration-200"
                               style={selected
-                                ? { borderColor: '#F3F8F7', backgroundColor: '#F3F8F7' }
-                                : { borderColor: '#7AADA6', backgroundColor: 'transparent' }
+                                ? { borderColor: '#F7F4F1', backgroundColor: '#F7F4F1' }
+                                : { borderColor: '#9D8E82', backgroundColor: 'transparent' }
                               }
                             >
                               {selected && (
-                                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#14332D' }} />
+                                <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: '#4C5C55' }} />
                               )}
                             </div>
                             {opt.label}
@@ -194,7 +201,7 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
                     })}
                   </div>
                   {isUnanswered && (
-                    <p className="text-xs mt-3" style={{ color: '#802B2B' }}>
+                    <p className="text-xs mt-3" style={{ color: '#8B3A3A' }}>
                       Please select an answer to continue
                     </p>
                   )}
@@ -206,11 +213,15 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
       </main>
 
       {/* Footer nav */}
-      <div className="sticky bottom-0 bg-canvas shadow-lift py-4 px-8 no-print">
+      <div
+        className="sticky bottom-0 bg-canvas py-4 px-8 no-print"
+        style={{ borderTop: BORDER }}
+      >
         <div className="max-w-3xl mx-auto flex justify-between items-center">
           <button
             onClick={handlePrev}
-            className="flex items-center gap-2 bg-surface text-ink text-sm font-medium px-4 py-2.5 rounded hover:opacity-80 transition-opacity duration-200 ease-out"
+            className="flex items-center gap-2 text-ink text-sm font-medium px-5 py-2.5 rounded-xl transition-all duration-200 ease-out hover:opacity-80"
+            style={{ backgroundColor: '#DCCFC0', border: BORDER }}
           >
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -220,7 +231,8 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
 
           <button
             onClick={handleNext}
-            className="flex items-center gap-2 bg-ink text-canvas text-sm font-semibold px-6 py-2.5 rounded hover:opacity-80 transition-opacity duration-200 ease-out"
+            className="flex items-center gap-2 text-canvas text-sm font-semibold px-6 py-2.5 rounded-xl transition-opacity duration-200 ease-out hover:opacity-85"
+            style={{ backgroundColor: '#4C5C55' }}
           >
             {isLastSection ? 'Generate my pack' : 'Next section'}
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

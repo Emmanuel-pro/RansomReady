@@ -14,7 +14,7 @@ export const BANDS: Record<RiskBand, BandConfig> = {
   critical: {
     label: 'Critical Risk',
     bg:    '#F5ECEC',
-    text:  '#802B2B',
+    text:  '#8B3A3A',
     headline: 'Immediate action required',
     summary: 'Your organisation currently has very limited protection against ransomware. A basic attack could cause serious and potentially irreversible damage. The actions in this pack should be treated as urgent.',
   },
@@ -34,15 +34,15 @@ export const BANDS: Record<RiskBand, BandConfig> = {
   },
   good: {
     label: 'Good Posture',
-    bg:    '#DCF0EB',
-    text:  '#2B6B5C',
+    bg:    '#EAF0E8',
+    text:  '#4C5C55',
     headline: 'Above average - keep improving',
     summary: 'Your organisation has solid ransomware defences in most areas. Use this pack to close the remaining gaps and maintain what you have already put in place.',
   },
   strong: {
     label: 'Strong Posture',
-    bg:    '#C8E5E0',
-    text:  '#14332D',
+    bg:    '#D8EAE4',
+    text:  '#262626',
     headline: 'Excellent - sustain and verify',
     summary: 'Your organisation has strong ransomware preparedness across all key areas. The priority now is testing, maintaining, and verifying that your controls remain effective over time.',
   },

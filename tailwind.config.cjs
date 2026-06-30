@@ -4,15 +4,16 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        canvas:  '#F3F8F7',
-        surface: '#E3EFEC',
+        canvas:  '#F7F4F1',
+        surface: '#DCCFC0',
+        moss:    '#A4AE98',
         ink: {
-          DEFAULT: '#14332D',
-          muted:   '#3D6960',
-          faint:   '#7AADA6',
+          DEFAULT: '#262626',
+          muted:   '#9D8E82',
+          faint:   '#C0B5AB',
         },
-        safe:    '#2B6B5C',
-        danger:  '#802B2B',
+        safe:    '#4C5C55',
+        danger:  '#8B3A3A',
         warning: '#7A6020',
       },
       fontFamily: {
@@ -21,9 +22,9 @@ module.exports = {
         mono:  ['"JetBrains Mono"', 'Consolas', 'monospace'],
       },
       boxShadow: {
-        subtle: '0 2px 24px rgba(20, 51, 45, 0.07)',
-        card:   '0 1px 8px rgba(20, 51, 45, 0.06)',
-        lift:   '0 4px 32px rgba(20, 51, 45, 0.10)',
+        subtle: '0 4px 32px rgba(38, 38, 38, 0.06)',
+        card:   '0 1px 6px rgba(38, 38, 38, 0.04)',
+        lift:   '0 8px 40px rgba(38, 38, 38, 0.08)',
       },
       letterSpacing: {
         display: '-0.03em',

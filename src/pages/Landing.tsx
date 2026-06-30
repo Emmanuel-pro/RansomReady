@@ -53,6 +53,8 @@ const OUTPUTS = [
   },
 ]
 
+const BORDER = '1px solid rgba(157, 142, 130, 0.25)'
+
 function Field({ label, error, children }: { label: string; error: string; children: React.ReactNode }) {
   return (
     <div>
@@ -60,7 +62,7 @@ function Field({ label, error, children }: { label: string; error: string; child
         {label}
       </label>
       {children}
-      {error && <p className="text-xs mt-1.5" style={{ color: '#802B2B' }}>{error}</p>}
+      {error && <p className="text-xs mt-1.5" style={{ color: '#8B3A3A' }}>{error}</p>}
     </div>
   )
 }
@@ -89,22 +91,22 @@ export default function Landing({ onStart }: Props) {
     <div className="min-h-screen bg-canvas flex flex-col">
 
       {/* Nav */}
-      <header className="bg-canvas no-print">
-        <div className="max-w-6xl mx-auto px-8 py-6 flex items-center justify-between">
+      <header className="bg-canvas no-print" style={{ borderBottom: BORDER }}>
+        <div className="max-w-6xl mx-auto px-8 py-5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <svg className="w-4 h-4 text-ink" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+            <svg className="w-4 h-4 text-safe" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
             </svg>
             <span className="text-sm font-semibold text-ink tracking-tight">RansomReady</span>
           </div>
-          <span className="text-xs tracking-widest uppercase text-ink-faint hidden sm:block">
+          <span className="text-xs tracking-widest uppercase text-ink-muted hidden sm:block">
             Preparedness Pack Builder
           </span>
         </div>
       </header>
 
       <main className="flex-1">
-        <div className="max-w-6xl mx-auto px-8 pt-12 pb-20">
+        <div className="max-w-6xl mx-auto px-8 pt-16 pb-24">
           <div className="grid lg:grid-cols-2 gap-20 items-start">
 
             {/* Left */}
@@ -112,11 +114,11 @@ export default function Landing({ onStart }: Props) {
               <p className="text-xs font-medium tracking-widest uppercase text-ink-muted mb-7">
                 Ransomware Awareness Tool
               </p>
-              <h1 className="font-display font-semibold text-ink leading-tight tracking-display mb-6" style={{ fontSize: '3.25rem' }}>
+              <h1 className="font-display font-semibold text-ink leading-tight tracking-display mb-6" style={{ fontSize: '3.5rem' }}>
                 Know your risk.<br />Take control.
               </h1>
               <p className="text-ink-muted leading-relaxed mb-10 max-w-sm">
-                Answer 15 plain-language questions. Receive a complete preparedness pack — scored, personalised, and ready to act on.
+                Answer 15 plain-language questions. Receive a complete preparedness pack - scored, personalised, and ready to act on.
               </p>
 
               <div className="flex flex-wrap gap-x-6 gap-y-2 mb-14">
@@ -130,16 +132,20 @@ export default function Landing({ onStart }: Props) {
                 ))}
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-2 gap-3">
                 {OUTPUTS.map(card => (
-                  <div key={card.label} className="bg-surface rounded p-4 transition-shadow duration-300 ease-out hover:shadow-card">
+                  <div
+                    key={card.label}
+                    className="bg-surface rounded-xl p-4 transition-all duration-200 ease-out hover:shadow-card"
+                    style={{ border: BORDER }}
+                  >
                     <div className="flex items-center gap-2 mb-2">
-                      <svg className="w-3.5 h-3.5 text-ink-muted flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
+                      <svg className="w-3.5 h-3.5 text-safe flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
                         {card.path}
                       </svg>
                       <span className="text-xs font-semibold text-ink">{card.label}</span>
                     </div>
-                    <p className="text-ink-faint text-xs leading-relaxed">{card.desc}</p>
+                    <p className="text-ink text-xs leading-relaxed opacity-70">{card.desc}</p>
                   </div>
                 ))}
               </div>
@@ -147,7 +153,10 @@ export default function Landing({ onStart }: Props) {
 
             {/* Right — form */}
             <div className="lg:pt-10">
-              <div className="bg-surface rounded shadow-subtle p-8">
+              <div
+                className="bg-surface rounded-2xl p-8 shadow-subtle"
+                style={{ border: BORDER }}
+              >
                 <h2 className="font-display text-2xl font-semibold text-ink tracking-tight mb-1">
                   Begin your assessment
                 </h2>
@@ -155,14 +164,15 @@ export default function Landing({ onStart }: Props) {
                   We use these details to personalise your pack. Nothing is saved.
                 </p>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-5">
                   <Field label="Organisation name" error={touched && !name.trim() ? 'Required' : ''}>
                     <input
                       type="text"
                       value={name}
                       onChange={e => setName(e.target.value)}
                       placeholder="e.g. Westside Community Trust"
-                      className="w-full bg-canvas text-ink text-sm px-4 py-3 rounded placeholder:text-ink-faint focus:shadow-card transition-shadow duration-300 ease-out"
+                      className="w-full bg-canvas text-ink text-sm px-4 py-3 rounded-xl placeholder:text-ink-muted focus:outline-none transition-all duration-200 ease-out"
+                      style={{ border: BORDER }}
                     />
                   </Field>
 
@@ -170,7 +180,8 @@ export default function Landing({ onStart }: Props) {
                     <select
                       value={sector}
                       onChange={e => setSector(e.target.value)}
-                      className="w-full bg-canvas text-ink text-sm px-4 py-3 rounded appearance-none focus:shadow-card transition-shadow duration-300 ease-out"
+                      className="w-full bg-canvas text-ink text-sm px-4 py-3 rounded-xl appearance-none focus:outline-none transition-all duration-200 ease-out"
+                      style={{ border: BORDER }}
                     >
                       <option value="">Select your sector</option>
                       {SECTORS.map(s => <option key={s} value={s}>{s}</option>)}
@@ -181,7 +192,8 @@ export default function Landing({ onStart }: Props) {
                     <select
                       value={size}
                       onChange={e => setSize(e.target.value)}
-                      className="w-full bg-canvas text-ink text-sm px-4 py-3 rounded appearance-none focus:shadow-card transition-shadow duration-300 ease-out"
+                      className="w-full bg-canvas text-ink text-sm px-4 py-3 rounded-xl appearance-none focus:outline-none transition-all duration-200 ease-out"
+                      style={{ border: BORDER }}
                     >
                       <option value="">Select size</option>
                       {SIZES.map(s => <option key={s} value={s}>{s}</option>)}
@@ -190,7 +202,8 @@ export default function Landing({ onStart }: Props) {
 
                   <button
                     type="submit"
-                    className="w-full bg-ink text-canvas text-sm font-semibold py-3.5 rounded tracking-tight hover:opacity-80 transition-opacity duration-300 ease-out flex items-center justify-center gap-2"
+                    className="w-full text-canvas text-sm font-semibold py-3.5 rounded-xl tracking-tight hover:opacity-85 transition-opacity duration-200 ease-out flex items-center justify-center gap-2 mt-2"
+                    style={{ backgroundColor: '#4C5C55' }}
                   >
                     Start assessment
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -205,7 +218,7 @@ export default function Landing({ onStart }: Props) {
         </div>
 
         <div className="max-w-6xl mx-auto px-8 pb-10">
-          <p className="text-xs text-ink-faint">
+          <p className="text-xs text-ink-muted">
             RansomReady is an awareness tool. It does not handle real incident data and does not replace professional cybersecurity advice.
           </p>
         </div>
