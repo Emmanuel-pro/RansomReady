@@ -49,7 +49,14 @@ export default function App() {
     <div className="min-h-screen flex flex-col bg-canvas">
       <Header activeView={activeNav} onNavigate={(view) => setScreen(view)} />
       <main className="flex-1 bg-canvas min-h-screen">
-        {screen === 'dashboard'  && <Dashboard onNavigateToLearn={() => setScreen('learn')} onStartAssessment={() => setScreen('landing')} />}
+        {screen === 'dashboard'  && (
+          <Dashboard
+            onNavigateToLearn={()    => setScreen('learn')}
+            onNavigateToTabletop={() => setScreen('tabletop')}
+            onNavigateToGame={()     => setScreen('interactive-game')}
+            onStartAssessment={()    => setScreen('landing')}
+          />
+        )}
         {screen === 'learn'      && <Learn onBack={() => setScreen('dashboard')} />}
         {screen === 'tabletop'   && <Tabletop onBack={() => setScreen('dashboard')} />}
         {screen === 'interactive-game' && <InteractiveGame onBack={() => setScreen('dashboard')} />}
