@@ -59,13 +59,13 @@ export default function Header({ activeView, onNavigate }: Props) {
           </DropdownMenuTrigger>
           <DropdownMenuContent side="bottom" align="start">
             <DropdownMenuItem className="cursor-pointer" onClick={() => onNavigate('tabletop')}>
-              Tabletop Exercises
+              Exercises
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => onNavigate('interactive-game')}
             >
-              Interactive Game (Adventures)
+              Game
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
