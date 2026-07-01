@@ -236,8 +236,8 @@ export const CATEGORY_ACTIONS: Record<Category, { weak: ActionItem[]; moderate: 
     ],
     moderate: [
       {
-        title: 'Run the tabletop exercise in this pack',
-        detail: 'Use the tabletop scenario included in your preparedness pack to walk your team through a simulated ransomware incident. This takes about 60–90 minutes and requires no technical expertise.',
+        title: 'Run a tabletop exercise with your team',
+        detail: 'Head to the Practise section of this site and work through one of the interactive tabletop scenarios with your leadership team. This takes about 45–60 minutes and requires no technical expertise.',
         effort: 'Low',
         week: 2,
         category: 'response',
@@ -306,44 +306,3 @@ export const CATEGORY_ACTIONS: Record<Category, { weak: ActionItem[]; moderate: 
   },
 }
 
-export const TABLETOP_SCENARIOS = [
-  {
-    title: 'Monday Morning',
-    sector: 'General',
-    scenario: `It is 9:15am on a Monday. Your finance manager arrives at work and finds that their computer will not open any files. A message appears on screen demanding a ransom payment of €15,000 in cryptocurrency within 72 hours. Shortly afterwards, two other staff members report the same problem. Your shared network drive appears to be inaccessible.`,
-    injects: [
-      { time: 'T+15 min', event: 'A board member calls asking what is happening - they have seen an alert from your cloud storage system.' },
-      { time: 'T+30 min', event: 'Your IT support provider says they cannot reach your server remotely. They ask if you want them to come on-site.' },
-      { time: 'T+1 hr',   event: 'A local journalist contacts your communications lead asking if you have suffered a data breach.' },
-      { time: 'T+2 hrs',  event: 'Staff are asking whether to pay the ransom. The attackers have sent a second message threatening to publish donor data.' },
-      { time: 'T+4 hrs',  event: 'Your cyber insurer asks for an initial incident report. What information can you provide?' },
-    ],
-    discussionQuestions: [
-      'Who is the first person you call - and do you have their number available right now, offline?',
-      'Which systems do you isolate first, and how do you do that without IT expertise on site?',
-      'What do you say to staff, and how do you prevent them from talking publicly about the incident?',
-      'Do you know whether your data is backed up and whether those backups are unaffected?',
-      'Who has authority to decide whether to pay a ransom - and what is your position on this?',
-      'What is your legal obligation to report this incident, and to whom?',
-    ],
-  },
-  {
-    title: 'Out of Hours Attack',
-    sector: 'General',
-    scenario: `It is 11pm on a Friday. Your organisation\'s IT monitoring system sends an automated alert to the manager on call - unusual file activity has been detected on the server. By the time the manager checks the message at 7am Saturday, all files on your main server have been encrypted. The ransom note demands payment within 48 hours or the decryption key will be destroyed.`,
-    injects: [
-      { time: 'T+0',      event: 'You have 48 hours on the clock. Your IT provider does not work weekends. What is your first step?' },
-      { time: 'T+2 hrs',  event: 'A staff member who was working from home overnight says they clicked a link in an email around 10pm that "seemed odd afterwards."' },
-      { time: 'T+4 hrs',  event: 'Your cloud backup service sends a notification that backup files have also been modified.' },
-      { time: 'T+6 hrs',  event: 'The deadline is now 42 hours away. A board member is asking you directly: "Should we just pay?"' },
-      { time: 'T+8 hrs',  event: 'A national cybersecurity authority publishes a bulletin about a widespread ransomware campaign targeting nonprofits. Your attack matches the description.' },
-    ],
-    discussionQuestions: [
-      'What is your out-of-hours escalation path - and is it documented somewhere offline?',
-      'How do you handle the situation if the entry point was a mistake by a staff member?',
-      'What is your position on ransom payment, and who has authority to make that call?',
-      'If your cloud backups are also affected, what is your recovery path?',
-      'At what point do you notify regulators, funders, or beneficiaries?',
-    ],
-  },
-]
