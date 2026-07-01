@@ -104,6 +104,75 @@ export default function Dashboard({
         </p>
       </div>
 
+      {/* ── Test Your Readiness ── */}
+      <section>
+        <p className="text-xs font-semibold uppercase tracking-widest text-safe mb-5">
+          Test Your Readiness
+        </p>
+
+        <div className="rounded-2xl overflow-hidden" style={{ border: BORDER }}>
+          <div className="grid lg:grid-cols-5">
+
+            {/* Left - CTA */}
+            <div className="lg:col-span-3 bg-surface px-8 py-9">
+              <h2
+                className="font-display font-semibold text-ink leading-tight mb-4"
+                style={{ fontSize: '2rem', letterSpacing: '-0.02em' }}
+              >
+                Know exactly where your organisation stands.
+              </h2>
+              <p className="text-sm text-ink-muted leading-relaxed mb-6 max-w-sm">
+                Answer 15 plain-language questions across five risk areas. Receive a complete
+                preparedness pack - scored, personalised, and ready to act on.
+              </p>
+
+              <div className="flex flex-wrap gap-x-5 gap-y-2 mb-8">
+                {[
+                  'Under 10 minutes',
+                  'Nothing saved or transmitted',
+                  'AI summary optional',
+                ].map(item => (
+                  <span key={item} className="flex items-center gap-1.5 text-xs text-ink-muted">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-safe flex-shrink-0" />
+                    {item}
+                  </span>
+                ))}
+              </div>
+
+              <Button
+                size="lg"
+                onClick={onStartAssessment}
+                className="bg-safe hover:opacity-90 text-canvas font-semibold cursor-pointer flex items-center gap-2"
+              >
+                Start readiness assessment
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </div>
+
+            {/* Right - pack outputs */}
+            <div className="lg:col-span-2 bg-canvas px-7 py-9" style={{ borderLeft: BORDER }}>
+              <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-5">
+                What you receive
+              </p>
+              <div className="space-y-3">
+                {PACK_OUTPUTS.map(output => (
+                  <div key={output.label} className="flex items-center gap-3">
+                    <div
+                      className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{ backgroundColor: '#EAF0E8' }}
+                    >
+                      <output.icon className="w-3.5 h-3.5 text-safe" />
+                    </div>
+                    <p className="text-sm font-medium text-ink">{output.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* ── My Learning ── */}
       <section>
         <p className="text-xs font-semibold uppercase tracking-widest text-safe mb-5">My Learning</p>
@@ -223,75 +292,6 @@ export default function Dashboard({
               </div>
             )
           })}
-        </div>
-      </section>
-
-      {/* ── Test Your Readiness ── */}
-      <section>
-        <p className="text-xs font-semibold uppercase tracking-widest text-safe mb-5">
-          Test Your Readiness
-        </p>
-
-        <div className="rounded-2xl overflow-hidden" style={{ border: BORDER }}>
-          <div className="grid lg:grid-cols-5">
-
-            {/* Left - CTA */}
-            <div className="lg:col-span-3 bg-surface px-8 py-9">
-              <h2
-                className="font-display font-semibold text-ink leading-tight mb-4"
-                style={{ fontSize: '2rem', letterSpacing: '-0.02em' }}
-              >
-                Know exactly where your organisation stands.
-              </h2>
-              <p className="text-sm text-ink-muted leading-relaxed mb-6 max-w-sm">
-                Answer 15 plain-language questions across five risk areas. Receive a complete
-                preparedness pack - scored, personalised, and ready to act on.
-              </p>
-
-              <div className="flex flex-wrap gap-x-5 gap-y-2 mb-8">
-                {[
-                  'Under 10 minutes',
-                  'Nothing saved or transmitted',
-                  'AI summary optional',
-                ].map(item => (
-                  <span key={item} className="flex items-center gap-1.5 text-xs text-ink-muted">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-safe flex-shrink-0" />
-                    {item}
-                  </span>
-                ))}
-              </div>
-
-              <Button
-                size="lg"
-                onClick={onStartAssessment}
-                className="bg-safe hover:opacity-90 text-canvas font-semibold cursor-pointer flex items-center gap-2"
-              >
-                Start readiness assessment
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* Right - pack outputs */}
-            <div className="lg:col-span-2 bg-canvas px-7 py-9" style={{ borderLeft: BORDER }}>
-              <p className="text-xs font-semibold uppercase tracking-widest text-ink-muted mb-5">
-                What you receive
-              </p>
-              <div className="space-y-3">
-                {PACK_OUTPUTS.map(output => (
-                  <div key={output.label} className="flex items-center gap-3">
-                    <div
-                      className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: '#EAF0E8' }}
-                    >
-                      <output.icon className="w-3.5 h-3.5 text-safe" />
-                    </div>
-                    <p className="text-sm font-medium text-ink">{output.label}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-          </div>
         </div>
       </section>
 
