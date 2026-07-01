@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import type { ScoredResult } from '../engine/score'
 import { BANDS } from '../engine/score'
 import type { OrgInfo } from '../App'
-import { TABLETOP_SCENARIOS } from '../data/recommendations'
 import type { Category } from '../data/questions'
 import CategoryIcon from '../components/CategoryIcon'
 import { fetchCyberSummary } from '../services/cyberSummary'
@@ -19,7 +18,6 @@ const TABS = [
   { id: 'checklist', label: 'First Hour Checklist' },
   { id: 'board',     label: 'Board Briefing' },
   { id: 'staff',     label: 'Staff Guide' },
-  { id: 'tabletop',  label: 'Tabletop Exercise' },
 ]
 
 const WEEK_LABELS = [
@@ -122,7 +120,6 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
   const [dynamicSummary, setDynamicSummary]     = useState('')
   const [summaryStatus, setSummaryStatus]       = useState<'loading' | 'ready' | 'fallback'>('loading')
   const cfg      = BANDS[result.band]
-  const scenario = TABLETOP_SCENARIOS[0]
   const byWeek   = [1, 2, 3, 4].map(w => ({ week: w, items: result.actionPlan.filter(a => a.week === w) }))
   const summary  = dynamicSummary || cfg.summary
 
@@ -545,84 +542,6 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
               <p className="rounded-xl p-4 font-medium text-ink text-center" style={{ backgroundColor: '#EAF0E8' }}>
                 Reporting a mistake early is never the wrong thing to do. It can be the difference between a small problem and a major incident.
               </p>
-            </div>
-          </div>
-        </div>
-
-        {/* ── TAB 5: TABLETOP EXERCISE ───────────────────────────────────── */}
-        <div className={sectionClass(5)}>
-          <SectionHeader number="6" title="Tabletop Exercise" />
-          <div className="rounded-xl px-5 py-4 mb-6" style={{ backgroundColor: '#F5F0E6', border: '1px solid rgba(122,96,32,0.2)' }}>
-            <p className="text-sm" style={{ color: '#7A6020' }}>
-              <strong>How to use this exercise:</strong> Gather your leadership team (6-10 people, 60-90 minutes). Assign a facilitator to read the scenario and inject events. Everyone else responds as they would in a real incident. There are no right answers - the goal is to find gaps and build muscle memory.
-            </p>
-          </div>
-          <div className="bg-surface rounded-2xl overflow-hidden" style={{ border: BORDER }}>
-            <div className="px-8 py-6" style={{ backgroundColor: '#4C5C55' }}>
-              <p className="text-xs font-medium uppercase tracking-widest mb-1" style={{ color: '#A4AE98' }}>
-                Scenario: {scenario.title}
-              </p>
-              <h3 className="font-semibold text-lg" style={{ color: '#F7F4F1' }}>
-                A ransomware attack hits {orgInfo.name}
-              </h3>
-            </div>
-            <div className="px-8 py-6 space-y-6 text-sm leading-relaxed">
-              <div>
-                <h4 className="font-semibold text-ink mb-2">Opening situation</h4>
-                <p className="text-ink opacity-80 bg-canvas rounded-xl p-4">
-                  {scenario.scenario.replace('your organisation', orgInfo.name)}
-                </p>
-              </div>
-              <div>
-                <h4 className="font-semibold text-ink mb-3">Facilitator injects - read these aloud at the times shown</h4>
-                <div className="space-y-3">
-                  {scenario.injects.map((inject, i) => (
-                    <div key={i} className="flex gap-4 items-start">
-                      <span
-                        className="flex-shrink-0 text-canvas text-xs font-mono px-2.5 py-1 rounded-lg"
-                        style={{ backgroundColor: '#4C5C55' }}
-                      >
-                        {inject.time}
-                      </span>
-                      <p className="text-ink opacity-80">{inject.event}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <h4 className="font-semibold text-ink mb-3">Discussion questions</h4>
-                <ol className="space-y-3">
-                  {scenario.discussionQuestions.map((q, i) => (
-                    <li key={i} className="flex gap-3 items-start text-ink opacity-80">
-                      <span
-                        className="flex-shrink-0 w-6 h-6 rounded-lg text-xs font-bold flex items-center justify-center mt-0.5 text-safe"
-                        style={{ backgroundColor: '#EAF0E8' }}
-                      >
-                        {i + 1}
-                      </span>
-                      <div className="flex-1">
-                        <p>{q}</p>
-                        <div className="mt-2 border-b border-dashed h-6" style={{ borderColor: 'rgba(157,142,130,0.4)' }} />
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </div>
-              <div className="pt-4" style={{ borderTop: BORDER }}>
-                <h4 className="font-semibold text-ink mb-3">After the exercise - capture your findings</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  {['What we did well', 'Gaps we identified', 'Actions we will take', 'Who is responsible'].map(heading => (
-                    <div key={heading} className="rounded-xl p-4" style={{ border: BORDER }}>
-                      <p className="text-xs font-medium text-ink-muted uppercase tracking-widest mb-3">{heading}</p>
-                      <div className="space-y-2">
-                        {[1, 2, 3].map(n => (
-                          <div key={n} className="border-b border-dashed h-6" style={{ borderColor: 'rgba(157,142,130,0.35)' }} />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
         </div>
