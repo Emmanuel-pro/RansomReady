@@ -67,19 +67,11 @@ export default function Assessment({ orgInfo, onComplete, onBack }: Props) {
   return (
     <div className="min-h-screen bg-canvas flex flex-col">
 
-      {/* Header */}
-      <header className="bg-canvas sticky top-0 z-10 no-print" style={{ borderBottom: BORDER }}>
-        <div className="max-w-3xl mx-auto px-8 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <svg className="w-4 h-4 text-safe" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-            </svg>
-            <span className="text-sm font-semibold text-ink tracking-tight">RansomReady</span>
-          </div>
-          <div className="flex items-center gap-5">
-            <span className="text-sm text-ink-muted hidden sm:block">{orgInfo.name}</span>
-            <span className="text-xs text-ink-muted tabular-nums">{totalAnswered} / {QUESTIONS.length}</span>
-          </div>
+      {/* Progress header */}
+      <header className="bg-canvas sticky top-16 z-10 no-print" style={{ borderBottom: BORDER }}>
+        <div className="max-w-3xl mx-auto px-8 py-3 flex items-center justify-between">
+          <span className="text-sm text-ink-muted">{orgInfo.name}</span>
+          <span className="text-xs text-ink-muted tabular-nums">{totalAnswered} / {QUESTIONS.length}</span>
         </div>
         {/* Progress bar */}
         <div className="h-px bg-surface">

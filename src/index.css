@@ -1,8 +1,54 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@theme {
+  --color-canvas:     #F7F4F1;
+  --color-surface:    #DCCFC0;
+  --color-moss:       #A4AE98;
+  --color-ink:        #262626;
+  --color-ink-muted:  #9D8E82;
+  --color-ink-faint:  #C0B5AB;
+  --color-safe:       #4C5C55;
+  --color-danger:     #8B3A3A;
+  --color-warning:    #7A6020;
+
+  --font-sans:    'Inter', system-ui, sans-serif;
+  --font-serif:   'Cormorant Garamond', Georgia, serif;
+  --font-mono:    'JetBrains Mono', Consolas, monospace;
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+
+  --shadow-subtle: 0 4px 32px rgba(38, 38, 38, 0.06);
+  --shadow-card:   0 1px 6px rgba(38, 38, 38, 0.04);
+  --shadow-lift:   0 8px 40px rgba(38, 38, 38, 0.08);
+
+  --tracking-display: -0.03em;
+
+  --ease-out-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
 
 @layer base {
+  :root {
+    --background:           #F7F4F1;
+    --foreground:            #262626;
+    --card:                  #DCCFC0;
+    --card-foreground:       #262626;
+    --popover:               #FBF9F6;
+    --popover-foreground:    #262626;
+    --primary:               #4C5C55;
+    --primary-foreground:    #F7F4F1;
+    --secondary:             #DCCFC0;
+    --secondary-foreground:  #262626;
+    --muted:                 #DCCFC0;
+    --muted-foreground:      #9D8E82;
+    --accent:                #A4AE98;
+    --accent-foreground:     #262626;
+    --destructive:           #8B3A3A;
+    --border:                rgba(157, 142, 130, 0.25);
+    --input:                 rgba(157, 142, 130, 0.25);
+    --ring:                  #4C5C55;
+    --radius:                0.75rem;
+  }
+
   body {
     @apply bg-canvas text-ink antialiased;
     font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
