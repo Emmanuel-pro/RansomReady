@@ -55,11 +55,11 @@ export default function InteractiveGame({ onBack }: Props) {
         Bite-sized levels that build your ransomware instincts one decision at a time.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
         {levels.map((level, i) => (
           <div
             key={level.id}
-            className="bg-canvas rounded-xl p-5 flex flex-col items-center text-center gap-3"
+            className={`bg-canvas rounded-xl p-5 flex flex-col items-center text-center gap-3 ${level.status === 'locked' ? 'opacity-70' : ''}`}
             style={{ border: '1px solid rgba(157, 142, 130, 0.25)' }}
           >
             <div className={`w-14 h-14 rounded-full border-2 flex items-center justify-center font-bold text-lg ${statusStyles[level.status]}`}>
@@ -73,6 +73,9 @@ export default function InteractiveGame({ onBack }: Props) {
               </p>
               <h3 className="font-semibold text-ink mb-1">{level.title}</h3>
               <p className="text-ink-muted text-sm leading-relaxed">{level.description}</p>
+              {level.status === 'locked' && (
+                <p className="text-xs text-ink-faint font-medium uppercase tracking-wide mt-2">Coming soon</p>
+              )}
             </div>
             <Button
               variant="outline"
