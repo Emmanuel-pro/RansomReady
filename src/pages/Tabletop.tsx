@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Building2, Trophy, ShoppingBasket, ArrowLeft, ArrowRight, RotateCcw, CircleHelp } from 'lucide-react'
 import { TABLETOP_SCENARIOS, type TabletopScenario, type DecisionOption, type DecisionTag } from '@/data/tabletopScenarios'
 import { BANDS } from '@/data/recommendations'
+import { saveTabletopAttempt } from '@/lib/userPerformance'
 
 const BORDER = '1px solid rgba(157, 142, 130, 0.25)'
 
@@ -39,6 +40,13 @@ function scoreBand(sum: number) {
   return 'strong' as const
 }
 
+function computeScore(options: DecisionOption[]) {
+  const totalImpact = options.reduce((sum, o) => sum + o.impact, 0)
+  const band = scoreBand(totalImpact)
+  const percent = Math.max(0, Math.min(100, Math.round(((totalImpact + 10) / 20) * 100)))
+  return { band, percent }
+}
+
 export default function Tabletop({ onBack }: Props) {
   const [view, setView] = useState<View>('select')
   const [activeScenario, setActiveScenario] = useState<TabletopScenario | null>(null)
@@ -72,6 +80,14 @@ export default function Tabletop({ onBack }: Props) {
     setChosenOptions(nextChosen)
     setSelectedId(null)
     if (decisionIndex === activeScenario.decisions.length - 1) {
+      const { percent, band } = computeScore(nextChosen)
+      saveTabletopAttempt({
+        scenarioId: activeScenario.id,
+        scenarioTitle: activeScenario.title,
+        percent,
+        band,
+        completedAt: new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+      })
       setView('report')
     } else {
       setDecisionIndex(decisionIndex + 1)
@@ -240,10 +256,8 @@ export default function Tabletop({ onBack }: Props) {
   }
 
   if (view === 'report' && activeScenario) {
-    const totalImpact = chosenOptions.reduce((sum, o) => sum + o.impact, 0)
-    const band = scoreBand(totalImpact)
+    const { band, percent } = computeScore(chosenOptions)
     const cfg = BANDS[band]
-    const percent = Math.max(0, Math.min(100, Math.round(((totalImpact + 10) / 20) * 100)))
     const strengths = Array.from(new Set(chosenOptions.filter(o => o.impact >= 1).map(o => o.tag)))
     const improvements = Array.from(new Set(chosenOptions.filter(o => o.impact <= -1).map(o => o.tag)))
 

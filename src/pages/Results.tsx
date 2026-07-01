@@ -5,6 +5,7 @@ import type { OrgInfo } from '../App'
 import type { Category } from '../data/questions'
 import CategoryIcon from '../components/CategoryIcon'
 import { fetchCyberSummary } from '../services/cyberSummary'
+import { saveAssessmentResult } from '../lib/userPerformance'
 
 interface Props {
   result: ScoredResult
@@ -140,6 +141,16 @@ export default function Results({ result, orgInfo, onRestart }: Props) {
     generateSummary(controller)
     return () => controller.abort()
   }, [generateSummary])
+
+  useEffect(() => {
+    saveAssessmentResult({
+      orgName: orgInfo.name,
+      percent: result.percent,
+      band: result.band,
+      date: orgInfo.date,
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   function handleRetrySummary() {
     generateSummary(new AbortController())
