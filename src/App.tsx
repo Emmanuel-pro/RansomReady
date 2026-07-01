@@ -57,7 +57,7 @@ export default function App() {
             onStartAssessment={()    => setScreen('landing')}
           />
         )}
-        {screen === 'learn'      && <Learn onBack={() => setScreen('dashboard')} />}
+        {screen === 'learn'      && <Learn onBack={() => setScreen('dashboard')} onNavigateToGame={() => setScreen('interactive-game')} />}
         {screen === 'tabletop'   && <Tabletop onBack={() => setScreen('dashboard')} />}
         {screen === 'interactive-game' && <InteractiveGame onBack={() => setScreen('dashboard')} />}
         {screen === 'landing'    && <Landing onStart={handleStart} />}
